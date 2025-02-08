@@ -28,7 +28,7 @@ if [ -d /tmp/labautomation ]; then
         git clone https://github.com/itsp-technology/autolabsoft.git /tmp/labautomation &>/dev/null
     fi
 else
-    git clone https://github.com/learndevopsonline/labautomation.git /tmp/labautomation &>/dev/null
+    git clone https://github.com/itsp-technology/autolabsoft.git /tmp/labautomation &>/dev/null
 fi
 
 ## Check if Setup Script Exists
