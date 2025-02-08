@@ -25,7 +25,7 @@ if [ -d /tmp/labautomation ]; then
     if [ $? -ne 0 ]; then
         cd /tmp
         rm -rf /tmp/lab*
-        git clone https://github.com/learndevopsonline/labautomation.git /tmp/labautomation &>/dev/null
+        git clone https://github.com/itsp-technology/autolabsoft.git /tmp/labautomation &>/dev/null
     fi
 else
     git clone https://github.com/learndevopsonline/labautomation.git /tmp/labautomation &>/dev/null
