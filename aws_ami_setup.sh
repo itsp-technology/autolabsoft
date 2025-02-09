@@ -3,7 +3,7 @@
 ## Checking Internet 
 ping -c 2 google.com &>/dev/null 
 if [ $? -ne 0 ]; then 
-    echo "Internet connection is not working. Check it!"
+    echo "Internet connection is not  working vivek. Check it!"
     exit 1
 fi
 
