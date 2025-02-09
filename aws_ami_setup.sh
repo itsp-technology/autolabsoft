@@ -3,7 +3,7 @@
 ## Checking Internet 
 ping -c 2 google.com &>/dev/null 
 if [ $? -ne 0 ]; then 
-    echo "Internet connection is not  working vivek. Check it!"
+    echo "Internet connection is not working. Check it!"
     exit 1
 fi
 
@@ -19,15 +19,6 @@ apt install -y wget curl unzip git net-tools jq vim
 
 ## Disable firewall
 systemctl disable --now ufw
-
-## Enable password login for SSH
-sed -i -e '/^PasswordAuthentication/ c PasswordAuthentication yes' \
-       -e '/^PermitRootLogin/ c PermitRootLogin yes' /etc/ssh/sshd_config
-systemctl restart ssh
-
-## Set root password
-ROOT_PASS="DevOps321"
-echo "root:$ROOT_PASS" | chpasswd
 
 ## Fix SSH keepalive settings
 sed -i -e '/TCPKeepAlive/ c TCPKeepAlive yes' \
