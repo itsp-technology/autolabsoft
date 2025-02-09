@@ -53,10 +53,6 @@ fi
 echo -e "\e[1;32mEnabling SSH password authentication...\e[0m"
 sed -i -e '/^PasswordAuthentication/ c PasswordAuthentication yes' -e '/^PermitRootLogin/ c PermitRootLogin yes' /etc/ssh/sshd_config
 systemctl restart ssh
-if [ $? -ne 0 ]; then
-    echo -e "\e[1;31mError: Failed to restart SSH service.\e[0m"
-    exit 1
-fi
 
 # Set Default Passwords
 echo -e "\e[1;32mSetting default password for root user...\e[0m"
@@ -90,5 +86,3 @@ echo -e "\e[1;32mCleaning up temporary files...\e[0m"
 apt autoremove -y
 apt clean -y
 rm -rf /tmp/*
-
-echo -e "\e[1;32mAMI setup completed successfully!\e[0m"
