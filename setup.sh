@@ -32,7 +32,7 @@ SCRIPT_COUNT=$(ls /tmp/labautomation/tools/$tool/*.sh |wc -l)
 case $SCRIPT_COUNT in
   1)
     echo -e "\e[1;33m★★★ Installing $tool ★★★\e[0m"
-    sh /tmp/labautomation/tools/$tool/maven/just-maven.sh
+    sh /tmp/labautomation/tools/$tool/just-maven.sh
     ;;
   *)
     echo -e "\e[31m Found Multiple Scripts, Choose One.. "
