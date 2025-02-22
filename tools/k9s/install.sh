@@ -6,6 +6,12 @@ VERSION=$(curl -s https://github.com/derailed/k9s/releases | grep 'Release v' | 
 curl -L "https://github.com/derailed/k9s/releases/download/${VERSION}/k9s_Linux_amd64.tar.gz" | tar -xz
 #sudo mv k9s /bin
 
+#=========================
+# 1. Use the Raw GitHub URL to install k9s so change this 
+    # Replace github.com with raw.githubusercontent.com in the URL
+        # $> curl -s https://raw.githubusercontent.com/itsp-technology/autolabsoft/main/tools/k9s/install.sh | sudo bash
+#=========================
+
 # next hit the k9s inside sever machine you will get k9s console
 
 #https://github.com/derailed/k9s/releases/download/v0.40.5/k9s_Linux_amd64.tar.gz
