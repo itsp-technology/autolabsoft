@@ -6,5 +6,6 @@ VERSION=$(curl -s https://github.com/derailed/k9s/releases | grep 'Release v' | 
 curl -L "https://github.com/derailed/k9s/releases/download/${VERSION}/k9s_Linux_amd64.tar.gz" | tar -xz
 sudo mv k9s /bin
 
+# next hit the k9s inside sever machine you will get k9s console
 
 #https://github.com/derailed/k9s/releases/download/v0.40.5/k9s_Linux_amd64.tar.gz
