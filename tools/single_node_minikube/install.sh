@@ -14,35 +14,32 @@ echo "Installing prerequisites..."
 sudo apt-get install -y curl wget apt-transport-https
 
 # Install Docker (as the container runtime)
-echo "Installing Docker..."
-if ! command -v docker &> /dev/null; then
-    sudo apt-get install -y docker.io
-    sudo systemctl enable docker
-    sudo systemctl start docker
-    sudo usermod -aG docker $USER
-    echo "Docker installed. User added to 'docker' group."
-else
-    echo "Docker is already installed."
-fi
+# echo "Installing Docker..."
+# if ! command -v docker &> /dev/null; then
+#     sudo apt-get install -y docker.io
+#     sudo systemctl enable docker
+#     sudo systemctl start docker
+#     sudo usermod -aG docker $USER
+# else
+#     echo "Docker is already installed."
+# fi
 
-# Ensure Docker is running
-if ! sudo systemctl is-active --quiet docker; then
-    echo "Starting Docker service..."
-    sudo systemctl start docker
+# Ensure Docker is in PATH and running
+if ! docker --version &> /dev/null; then
+    echo "Docker installation failed or not available. Please check your system and try again."
+    exit 1
 fi
 
 # Install kubectl
 echo "Installing kubectl..."
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
 
 # Install Minikube
 echo "Installing Minikube..."
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install -o root -g root -m 0755 minikube-linux-amd64 /usr/local/bin/minikube
-
-# Cleanup temporary files
-rm -f kubectl minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 # Verify installations
 echo "Verifying installations..."
@@ -52,16 +49,16 @@ minikube version || { echo "Minikube not found! Exiting."; exit 1; }
 
 # Check if the user is in the docker group and prompt if a relogin is needed
 if ! groups | grep -q docker; then
-    echo "You’ve been added to the 'docker' group. Please log out and back in (or reboot)."
-    echo "After relogin, run 'minikube start --driver=docker' manually."
+    echo "Note: You’ve been added to the 'docker' group. Please log out and log back in (or reboot) for this to take effect."
+    echo "After relogin, run 'minikube start --driver=docker' manually to start the cluster."
     exit 1
 fi
 
-# Start Minikube with Docker driver
+# Start Minikube with Docker driver (without sudo)
 echo "Starting Minikube with Docker driver..."
 minikube start --driver=docker
 
-# Enable Minikube addons (optional)
+# Enable Minikube addons (optional, e.g., dashboard)
 echo "Enabling Minikube dashboard..."
 minikube addons enable dashboard
 
@@ -73,5 +70,5 @@ kubectl get nodes
 echo "Displaying cluster info..."
 kubectl cluster-info
 
-echo "Minikube setup completed successfully!"
+echo "Minikube single-node Kubernetes setup completed successfully!"
 echo "To access the Kubernetes dashboard, run: 'minikube dashboard'"
