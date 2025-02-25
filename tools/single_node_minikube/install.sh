@@ -37,7 +37,14 @@ docker --version
 kubectl version --client
 minikube version
 
-# Start Minikube with Docker driver
+# Check if the user is in the docker group and prompt if a relogin is needed
+if ! groups | grep -q docker; then
+    echo "Note: You’ve been added to the 'docker' group. Please log out and log back in (or reboot) for this to take effect."
+    echo "After relogin, run 'minikube start --driver=docker' manually to start the cluster."
+    exit 1
+fi
+
+# Start Minikube with Docker driver (without sudo)
 echo "Starting Minikube with Docker driver..."
 minikube start --driver=docker
 
