@@ -15,10 +15,14 @@ sudo apt-get install -y curl wget apt-transport-https
 
 # Install Docker (as the container runtime)
 echo "Installing Docker..."
-sudo apt-get install -y docker.io
-sudo systemctl enable docker
-sudo systemctl start docker
-sudo usermod -aG docker $USER
+if ! command -v docker &> /dev/null; then
+    sudo apt-get install -y docker.io
+    sudo systemctl enable docker
+    sudo systemctl start docker
+    sudo usermod -aG docker $USER
+else
+    echo "Docker is already installed."
+fi
 
 # Ensure Docker is in PATH and running
 if ! docker --version &> /dev/null; then
