@@ -1,49 +1,64 @@
 #!/bin/bash
 
-# Exit script on any error
+# Script to install and set up Minikube with Kubernetes single-node cluster
+
+# Exit on any error
 set -e
 
-echo "Starting Minikube installation..."
+# Update package list
+echo "Updating package list..."
+sudo apt-get update -y
 
-# Step 1: Update and install dependencies
-echo "Updating package list and installing dependencies..."
-sudo apt update -y
-sudo apt install -y curl apt-transport-https ca-certificates software-properties-common docker.io
+# Install prerequisites
+echo "Installing prerequisites..."
+sudo apt-get install -y curl wget apt-transport-https ca-certificates gnupg lsb-release
 
-# Step 2: Download Minikube binary
-echo "Downloading Minikube binary..."
+# Install Docker (official method)
+echo "Installing Docker..."
+if ! command -v docker &> /dev/null; then
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update -y
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+    sudo systemctl enable --now docker
+    sudo usermod -aG docker $USER
+else
+    echo "Docker is already installed."
+fi
+
+# Ensure Docker is in PATH and running
+if ! docker --version &> /dev/null; then
+    echo "Docker installation failed or not available. Please check your system and try again."
+    exit 1
+fi
+
+# Install kubectl
+echo "Installing kubectl..."
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+sudo chown root:root /usr/local/bin/kubectl
+
+# Install Minikube
+echo "Installing Minikube..."
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+rm -f minikube-linux-amd64
+sudo chown root:root /usr/local/bin/minikube
 
-# Step 3: Make Minikube binary executable
-echo "Making Minikube binary executable..."
-chmod +x minikube-linux-amd64
+# Verify installations
+echo "Verifying installations..."
+docker --version || { echo "Docker not found! Exiting."; exit 1; }
+kubectl version --client || { echo "kubectl not found! Exiting."; exit 1; }
+minikube version || { echo "Minikube not found! Exiting."; exit 1; }
 
-# Step 4: Move Minikube binary to /usr/local/bin
-echo "Moving Minikube binary to /usr/local/bin..."
-sudo mv minikube-linux-amd64 /usr/local/bin/minikube
-
-# Step 5: Start Docker
-echo "Starting Docker service..."
-sudo systemctl start docker
-sudo systemctl enable docker
-hist
-# Step 6: Add user to the Docker group
-echo "Adding user to Docker group..."
-sudo usermod -aG docker $USER
-echo "Please log out and log back in to apply Docker group changes."
-
-# Step 7: Start Minikube as non-root user
-# echo "Starting Minikube with Docker driver (non-root)..."
-# newgrp docker <<EOF
-# minikube start --driver=docker
-# EOF
-echo "Starting Minikube with Docker driver (non-root)..."
-newgrp docker 
-sudo usermod -aG docker $USER && newgrp docker
-minikube start --driver=docker
-
-# Step 8: Verify installation
-echo "Verifying Minikube installation..."
-minikube status
-
-echo "Minikube installation completed successfully!"
+# Manual step: Inform user to apply group changes
+echo -e "\n==== IMPORTANT STEP ===="
+echo "You've been added to the 'docker' group."
+echo "Please run the following command manually to apply the changes:"
+echo -e "\n    newgrp docker\n"
+echo "Then, restart Minikube manually using:"
+echo -e "\n    minikube start --driver=docker\n"
+echo "========================"
+exit 1
