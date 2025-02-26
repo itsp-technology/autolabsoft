@@ -21,7 +21,7 @@ else
 fi
 
 # Step 2: Check if Minikube is installed
-if command -v minikube &> /dev/null; then
+if command -v minikube &> /dev/null && [ -f /usr/local/bin/minikube ]; then
     echo "Minikube is already installed. Skipping installation."
 else
     echo "Downloading Minikube binary..."
