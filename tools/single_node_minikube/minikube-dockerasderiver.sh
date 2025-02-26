@@ -32,9 +32,11 @@ echo "Adding user to Docker group..."
 sudo usermod -aG docker $USER
 echo "Please log out and log back in to apply Docker group changes."
 
-# Step 7: Start Minikube
-echo "Starting Minikube with Docker driver..."
+# Step 7: Start Minikube as non-root user
+echo "Starting Minikube with Docker driver (non-root)..."
+newgrp docker <<EOF
 minikube start --driver=docker
+EOF
 
 # Step 8: Verify installation
 echo "Verifying Minikube installation..."
