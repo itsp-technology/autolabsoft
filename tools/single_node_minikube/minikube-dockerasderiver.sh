@@ -58,7 +58,7 @@ echo -e "\n==== IMPORTANT STEP ===="
 echo "You've been added to the 'docker' group."
 echo "Please run the following command manually to apply the changes:"
 echo -e "\n    newgrp docker\n"
-echo "Then, restart Minikube manually using:"
+echo "Then, start Minikube without sudo using:"
 echo -e "\n    minikube start --driver=docker\n"
 echo "========================"
 exit 1
