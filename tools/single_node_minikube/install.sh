@@ -33,7 +33,7 @@ else
 fi
 
 # Step 3: Check if kubectl is installed
-if command -v kubectl &> /dev/null; then
+if command -v kubectl &> /dev/null && [ -f $(which kubectl) ]; then
     echo "kubectl is already installed. Skipping installation."
 else
     echo "Downloading and installing kubectl..."
