@@ -32,6 +32,11 @@ echo "Adding user to Docker group..."
 sudo usermod -aG docker $USER
 echo "Please log out and log back in to apply Docker group changes."
 
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+
 # Step 7: Start Minikube
 echo "Starting Minikube with Docker driver..."
 minikube start --force --driver=docker
