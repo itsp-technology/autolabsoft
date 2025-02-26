@@ -41,15 +41,11 @@ else
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 fi
 
-# Step 4: Start Minikube
-if minikube status &> /dev/null; then
-    echo "Minikube is already running. Skipping start."
-else
-    echo "Starting Minikube with Docker driver..."
-    minikube start --force --driver=docker
-fi
+# Step 7: Start Minikube
+echo "Starting Minikube with Docker driver..."
+minikube start --force --driver=docker
 
-# Step 5: Verify installation
+# Step 8: Verify installation
 echo "Verifying Minikube installation..."
 minikube status
 
