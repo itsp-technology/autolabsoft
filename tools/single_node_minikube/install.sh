@@ -6,7 +6,7 @@ set -e
 echo "Starting Minikube installation..."
 
 # Step 1: Check if Docker is installed
-if command -v docker &> /dev/null && [ -f /var/lib/docker ]; then
+if command -v docker &> /dev/null && [ -d /var/lib/docker ]; then
     echo "Docker is already installed. Skipping installation."
 else
     echo "Updating package list and installing Docker dependencies..."
@@ -33,7 +33,7 @@ else
 fi
 
 # Step 3: Check if kubectl is installed
-if command -v kubectl &> /dev/null && [ -f $(which kubectl) ]; then
+if command -v kubectl &> /dev/null && [ -f "$(command -v kubectl)" ]; then
     echo "kubectl is already installed. Skipping installation."
 else
     echo "Downloading and installing kubectl..."
