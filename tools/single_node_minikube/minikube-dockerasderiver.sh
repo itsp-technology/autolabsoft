@@ -26,17 +26,21 @@ sudo mv minikube-linux-amd64 /usr/local/bin/minikube
 echo "Starting Docker service..."
 sudo systemctl start docker
 sudo systemctl enable docker
-
+hist
 # Step 6: Add user to the Docker group
 echo "Adding user to Docker group..."
 sudo usermod -aG docker $USER
 echo "Please log out and log back in to apply Docker group changes."
 
 # Step 7: Start Minikube as non-root user
+# echo "Starting Minikube with Docker driver (non-root)..."
+# newgrp docker <<EOF
+# minikube start --driver=docker
+# EOF
 echo "Starting Minikube with Docker driver (non-root)..."
-newgrp docker <<EOF
+newgrp docker 
+sudo usermod -aG docker $USER && newgrp docker
 minikube start --driver=docker
-EOF
 
 # Step 8: Verify installation
 echo "Verifying Minikube installation..."
