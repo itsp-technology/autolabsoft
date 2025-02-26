@@ -6,7 +6,7 @@ set -e
 echo "Starting Minikube installation..."
 
 # Step 1: Check if Docker is installed
-if command -v docker &> /dev/null; then
+if command -v docker &> /dev/null && [ -f /var/lib/docker ]; then
     echo "Docker is already installed. Skipping installation."
 else
     echo "Updating package list and installing Docker dependencies..."
