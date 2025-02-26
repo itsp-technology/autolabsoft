@@ -1,74 +1,56 @@
 #!/bin/bash
 
-# Script to install and set up Minikube with Kubernetes single-node cluster
-
-# Exit on any error
+# Exit script on any error
 set -e
 
-# Update package list
-echo "Updating package list..."
-sudo apt-get update -y
+echo "Starting Minikube installation..."
 
-# Install prerequisites
-echo "Installing prerequisites..."
-sudo apt-get install -y curl wget apt-transport-https
-
-#Install Docker (as the container runtime)
-echo "Installing Docker..."
-if ! command -v docker &> /dev/null; then
-    sudo apt-get install -y docker.io
-    sudo systemctl enable docker
-    sudo systemctl start docker
-    sudo usermod -aG docker $USER
+# Step 1: Check if Docker is installed
+if command -v docker &> /dev/null; then
+    echo "Docker is already installed. Skipping installation."
 else
-    echo "Docker is already installed."
+    echo "Updating package list and installing Docker dependencies..."
+    sudo apt update -y
+    sudo apt install -y curl apt-transport-https ca-certificates software-properties-common docker.io
+    echo "Starting Docker service..."
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    echo "Adding user to Docker group..."
+    sudo usermod -aG docker $USER
+    echo "Please log out and log back in to apply Docker group changes."
 fi
 
-# Ensure Docker is in PATH and running
-if ! docker --version &> /dev/null; then
-    echo "Docker installation failed or not available. Please check your system and try again."
-    exit 1
+# Step 2: Check if Minikube is installed
+if command -v minikube &> /dev/null; then
+    echo "Minikube is already installed. Skipping installation."
+else
+    echo "Downloading Minikube binary..."
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    echo "Making Minikube binary executable..."
+    chmod +x minikube-linux-amd64
+    echo "Moving Minikube binary to /usr/local/bin..."
+    sudo mv minikube-linux-amd64 /usr/local/bin/minikube
 fi
 
-# Install kubectl
-echo "Installing kubectl..."
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-
-# Install Minikube
-echo "Installing Minikube..."
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-# Verify installations
-echo "Verifying installations..."
-docker --version || { echo "Docker not found! Exiting."; exit 1; }
-kubectl version --client || { echo "kubectl not found! Exiting."; exit 1; }
-minikube version || { echo "Minikube not found! Exiting."; exit 1; }
-
-# Check if the user is in the docker group and prompt if a relogin is needed
-if ! groups | grep -q docker; then
-    echo "Note: You’ve been added to the 'docker' group. Please log out and log back in (or reboot) for this to take effect."
-    echo "After relogin, run 'minikube start --driver=docker' manually to start the cluster."
-    exit 1
+# Step 3: Check if kubectl is installed
+if command -v kubectl &> /dev/null; then
+    echo "kubectl is already installed. Skipping installation."
+else
+    echo "Downloading and installing kubectl..."
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 fi
 
-# Start Minikube with Docker driver (without sudo)
-echo "Starting Minikube with Docker driver..."
-minikube start --driver=docker
+# Step 4: Start Minikube
+if minikube status &> /dev/null; then
+    echo "Minikube is already running. Skipping start."
+else
+    echo "Starting Minikube with Docker driver..."
+    minikube start --force --driver=docker
+fi
 
-# Enable Minikube addons (optional, e.g., dashboard)
-echo "Enabling Minikube dashboard..."
-minikube addons enable dashboard
+# Step 5: Verify installation
+echo "Verifying Minikube installation..."
+minikube status
 
-# Verify cluster status
-echo "Checking Kubernetes cluster status..."
-kubectl get nodes
-
-# Display cluster info
-echo "Displaying cluster info..."
-kubectl cluster-info
-
-echo "Minikube single-node Kubernetes setup completed successfully!"
-echo "To access the Kubernetes dashboard, run: 'minikube dashboard'"
+echo "Minikube installation completed successfully!"
