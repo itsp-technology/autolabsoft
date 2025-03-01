@@ -1,5 +1,5 @@
 # autolabsoft
-# 1. Use the Raw GitHub URL to install k9s so change this
+# 1. this is used to install DevOps Tools listed below
 
 * eplace github.com with raw.githubusercontent.com in the URL
 ```
