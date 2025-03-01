@@ -1,14 +1,10 @@
 # Welcome Message
 Clear-Host
-Write-Host "############################################################################" -ForegroundColor Green
+Write-Host "****************************************************************************" -ForegroundColor Green
 Write-Host "#                                                                          #" -ForegroundColor Green
-Write-Host "#          DevOps Tool Installer/Uninstaller by ProDevOpsGuy Tech          #" -ForegroundColor Green
+Write-Host "#           DevOps Tool Installer/Uninstaller by VIVEK                     #" -ForegroundColor Green
 Write-Host "#                                                                          #" -ForegroundColor Green
-Write-Host "############################################################################" -ForegroundColor Green
-Write-Host ""
-Write-Host "Automate the installation and uninstallation of essential DevOps tools on your Windows machine."
-Write-Host "Choose from a wide range of tools and get started quickly and easily."
-Write-Host ""
+Write-Host "****************************************************************************" -ForegroundColor Green
 Write-Host "Tools available for installation/uninstallation:"
 Write-Host "  - Docker 🐳"
 Write-Host "  - Kubernetes (kubectl) ☸️"
