@@ -27,7 +27,7 @@ echo "**************************************************************************
 get_linux_distribution() {
   echo "Select your Linux distribution:"
   echo "1. Ubuntu/Debian"
-  echo "2. CentOS/RHEL"
+  echo "2. CentOS/RHEL optional"
   echo "3. Fedora"
   read -p "Enter the number corresponding to your distribution: " distro_choice
 
